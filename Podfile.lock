@@ -1,20 +1,57 @@
 PODS:
+  - Masonry (1.1.0)
   - SnapKit (5.0.1)
   - SVProgressHUD (2.2.5)
+  - XQProjectTool (2.0):
+    - XQProjectTool/MacTool (= 2.0)
+    - XQProjectTool/Tool (= 2.0)
+    - XQProjectTool/UITool (= 2.0)
+  - XQProjectTool/Tool (2.0)
+  - XQProjectTool/UITool (2.0):
+    - XQProjectTool/Tool
+  - XQProjectTool_iPhoneUI (1.9):
+    - XQProjectTool
+    - XQProjectTool_iPhoneUI/Tool (= 1.9)
+    - XQProjectTool_iPhoneUI/UITool (= 1.9)
+  - XQProjectTool_iPhoneUI/Tool (1.9):
+    - XQProjectTool
+  - XQProjectTool_iPhoneUI/UITool (1.9):
+    - Masonry
+    - XQProjectTool
 
 DEPENDENCIES:
   - SnapKit
   - SVProgressHUD
+  - XQProjectTool (from `https://github.com/SyKingW/XQProjectTool.git`)
+  - XQProjectTool_iPhoneUI (from `https://github.com/SyKingW/XQProjectTool_iPhoneUI.git`)
 
 SPEC REPOS:
   trunk:
+    - Masonry
     - SnapKit
     - SVProgressHUD
 
+EXTERNAL SOURCES:
+  XQProjectTool:
+    :git: https://github.com/SyKingW/XQProjectTool.git
+  XQProjectTool_iPhoneUI:
+    :git: https://github.com/SyKingW/XQProjectTool_iPhoneUI.git
+
+CHECKOUT OPTIONS:
+  XQProjectTool:
+    :commit: 764fc2e82475c00002fa637a1b55a7fcaa2f379d
+    :git: https://github.com/SyKingW/XQProjectTool.git
+  XQProjectTool_iPhoneUI:
+    :commit: 04e525f8544a9622b2bf48e6c0addc2af5d12192
+    :git: https://github.com/SyKingW/XQProjectTool_iPhoneUI.git
+
 SPEC CHECKSUMS:
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  XQProjectTool: 9f11b3193d25004057c32d9b8fa900db52bc4abe
+  XQProjectTool_iPhoneUI: 80c8ad1fda3a1f8128ddcedd9df7e6824acc4139
 
-PODFILE CHECKSUM: 94c508f6229cfcc2eca1f05e6bd872a8ec4c71a2
+PODFILE CHECKSUM: 79765e1880a38054675b932892bd80cd463fc897
 
 COCOAPODS: 1.8.4

@@ -1,19 +1,19 @@
 //
-//  LabelVC.swift
+//  SliderVC.swift
 //  XQUITestDemo
 //
-//  Created by WXQ on 2020/3/7.
+//  Created by sinking on 2020/3/8.
 //  Copyright © 2020 WXQ. All rights reserved.
 //
 
 import UIKit
 
-class LabelVC: UIViewController {
+class SliderVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Label"
-        self.view.backgroundColor = UIColor.white
+
+        // Do any additional setup after loading the view.
     }
     
 
