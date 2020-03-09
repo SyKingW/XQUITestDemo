@@ -14,7 +14,7 @@ target 'XQUITestDemo' do
 
 pod 'SnapKit'
 pod 'SVProgressHUD'
-
+pod 'MJRefresh'
 
 pod 'XQProjectTool', :git => 'https://github.com/SyKingW/XQProjectTool.git'
 pod 'XQProjectTool_iPhoneUI', :git => 'https://github.com/SyKingW/XQProjectTool_iPhoneUI.git'

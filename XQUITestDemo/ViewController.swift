@@ -51,10 +51,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             "TextField",
             "Slider",
             "Switch",
-            "ScrollView",
             "TableView",
-            "CollectionView",
-            "乱点测试",
+            "WebView",
         ]
     }
     
@@ -90,7 +88,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         case 5:
             self.navigationController?.pushViewController(SwitchVC(), animated: true)
             
+        case 6:
+            self.navigationController?.pushViewController(TableViewVC(), animated: true)
             
+        case 7:
+            self.navigationController?.pushViewController(WebViewVC(), animated: true)
             
         default:
             break

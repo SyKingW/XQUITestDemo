@@ -29,8 +29,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="jb7-b4-ufA" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="首页" image="house" catalog="system" id="By1-hy-Qdz"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="SmC-Ul-C3J">
-                        <rect key="frame" x="0.0" y="44" width="414" height="104.5"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SmC-Ul-C3J">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -68,7 +68,7 @@
                     <tabBarItem key="tabBarItem" title="我的" image="square.and.arrow.down" catalog="system" id="T9s-kv-VCZ"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="GRS-fy-lmr">
-                        <rect key="frame" x="0.0" y="44" width="414" height="104.5"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

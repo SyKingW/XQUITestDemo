@@ -19,14 +19,12 @@ class ButtonVC: UIViewController {
         self.view.backgroundColor = UIColor.gray
         
         self.initBtn()
-        self.initBtn1()
         self.initBtn2()
         self.initBtn3()
     }
     
     
     let btn = UIButton.init()
-    let btn1 = UIButton.init()
     let btn2 = UIButton.init()
     let btn3 = UIButton.init()
     
@@ -43,24 +41,13 @@ class ButtonVC: UIViewController {
         }
     }
     
-    func initBtn1() {
-        btn1.backgroundColor = UIColor.black
-        btn1.setTitle("双击背景变红", for: .normal)
-        btn1.addTarget(self, action: #selector(respondsToRed), for: .touchDownRepeat)
-        self.view.addSubview(btn1)
-        btn1.snp.makeConstraints { (make) in
-            make.top.equalTo(self.btn.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-        }
-    }
-    
     func initBtn2() {
         btn2.setImage(UIImage.init(named: "back"), for: .normal)
         btn2.setBackgroundImage(UIImage.init(named: "Safari"), for: .normal)
         btn2.addTarget(self, action: #selector(respondsToImage), for: .touchDownRepeat)
         self.view.addSubview(btn2)
         btn2.snp.makeConstraints { (make) in
-            make.top.equalTo(self.btn1.snp.bottom).offset(20)
+            make.top.equalTo(self.btn.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
         }
     }

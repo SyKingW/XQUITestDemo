@@ -28,23 +28,26 @@ class TextFieldVC: UIViewController, UITextFieldDelegate {
         self.view.addSubview(tf)
         self.tf.snp.makeConstraints { (make) in
             make.topMargin.equalToSuperview().offset(30)
-            make.left.right.equalToSuperview().offset(20)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
         }
         self.tf.accessibilityIdentifier = "test_tf_acc"
         self.tf.placeholder = "账号"
+        self.tf.borderStyle = .roundedRect
         
-        self.tf.delegate = self
         
         
         
         self.view.addSubview(tf1)
         self.tf1.snp.makeConstraints { (make) in
             make.top.equalTo(self.tf.snp.bottom).offset(30)
-            make.left.right.equalToSuperview().offset(20)
+            make.left.right.equalTo(self.tf)
         }
         self.tf1.accessibilityIdentifier = "test_tf_pwd"
         self.tf1.placeholder = "密码"
         self.tf1.isSecureTextEntry = true
+        self.tf1.delegate = self
+        self.tf1.borderStyle = .roundedRect
         
         
         self.view.addSubview(self.btn)
@@ -56,6 +59,7 @@ class TextFieldVC: UIViewController, UITextFieldDelegate {
         self.btn.setTitle("登录", for: .normal)
         self.btn.backgroundColor = UIColor.orange
         self.btn.addTarget(self, action: #selector(respondsToLogin), for: .touchUpInside)
+        
         
     }
     

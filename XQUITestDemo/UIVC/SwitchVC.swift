@@ -9,22 +9,23 @@
 import UIKit
 
 class SwitchVC: UIViewController {
+    
+    let testSwitch = UISwitch()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.navigationItem.title = "Switch"
+        self.view.backgroundColor = UIColor.white
+        
+        
+        self.view.addSubview(self.testSwitch)
+        self.testSwitch.snp.makeConstraints { (make) in
+            make.topMargin.equalToSuperview().offset(30)
+            make.centerX.equalToSuperview()
+        }
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

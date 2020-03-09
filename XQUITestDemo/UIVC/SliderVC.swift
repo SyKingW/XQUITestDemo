@@ -9,22 +9,27 @@
 import UIKit
 
 class SliderVC: UIViewController {
+    
+    let slider = UISlider()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        self.navigationItem.title = "Slider"
+        self.view.backgroundColor = UIColor.white
+        
+        
+        self.view.addSubview(self.slider)
+        self.slider.snp.makeConstraints { (make) in
+            make.topMargin.equalToSuperview().offset(30)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+        }
+        
+        
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
+    
 }

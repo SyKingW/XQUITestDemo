@@ -10,6 +10,7 @@
 		1FC885520C38345C4ED66F08 /* Pods_XQUITestDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0DF30E05CBBBAFB5A81A67B /* Pods_XQUITestDemo.framework */; };
 		393604012414A8A600E1343C /* SliderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393604002414A8A600E1343C /* SliderVC.swift */; };
 		393604032414A8AE00E1343C /* SwitchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393604022414A8AE00E1343C /* SwitchVC.swift */; };
+		A46F114C24161B3300B10286 /* WebViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46F114B24161B3300B10286 /* WebViewVC.swift */; };
 		A4869FE92413896A00A88059 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4869FE82413896A00A88059 /* AppDelegate.swift */; };
 		A4869FED2413896A00A88059 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4869FEC2413896A00A88059 /* ViewController.swift */; };
 		A4869FF02413896A00A88059 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4869FEE2413896A00A88059 /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 		A486A02D2413A1D700A88059 /* ViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486A02C2413A1D700A88059 /* ViewVC.swift */; };
 		A486A02F2413A1E900A88059 /* TextFieldVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486A02E2413A1E900A88059 /* TextFieldVC.swift */; };
 		A486A0322413A25000A88059 /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486A0312413A25000A88059 /* NavigationVC.swift */; };
+		A4A6DBE42415EECF006EEF5F /* TableViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A6DBE32415EECF006EEF5F /* TableViewVC.swift */; };
 		C1892A46D5B2A3FEF7CF665A /* Pods_XQUITestDemo_XQUITestDemoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C40FA9A531732E85658DCD51 /* Pods_XQUITestDemo_XQUITestDemoUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,7 @@
 		393604022414A8AE00E1343C /* SwitchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchVC.swift; sourceTree = "<group>"; };
 		440A7029E8D2919E8AADCE6A /* Pods-XQUITestDemo-XQUITestDemoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XQUITestDemo-XQUITestDemoUITests.debug.xcconfig"; path = "Target Support Files/Pods-XQUITestDemo-XQUITestDemoUITests/Pods-XQUITestDemo-XQUITestDemoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		62EB26E9435D1256C2221A72 /* Pods-XQUITestDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XQUITestDemo.debug.xcconfig"; path = "Target Support Files/Pods-XQUITestDemo/Pods-XQUITestDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		A46F114B24161B3300B10286 /* WebViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewVC.swift; sourceTree = "<group>"; };
 		A4869FE52413896A00A88059 /* XQUITestDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XQUITestDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4869FE82413896A00A88059 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A4869FEC2413896A00A88059 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 		A486A02C2413A1D700A88059 /* ViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewVC.swift; sourceTree = "<group>"; };
 		A486A02E2413A1E900A88059 /* TextFieldVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldVC.swift; sourceTree = "<group>"; };
 		A486A0312413A25000A88059 /* NavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
+		A4A6DBE32415EECF006EEF5F /* TableViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewVC.swift; sourceTree = "<group>"; };
 		C0DF30E05CBBBAFB5A81A67B /* Pods_XQUITestDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XQUITestDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40FA9A531732E85658DCD51 /* Pods_XQUITestDemo_XQUITestDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XQUITestDemo_XQUITestDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4289E692FDF67704D53BCF1 /* Pods-XQUITestDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XQUITestDemo.release.xcconfig"; path = "Target Support Files/Pods-XQUITestDemo/Pods-XQUITestDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -147,6 +151,8 @@
 				A486A02E2413A1E900A88059 /* TextFieldVC.swift */,
 				393604002414A8A600E1343C /* SliderVC.swift */,
 				393604022414A8AE00E1343C /* SwitchVC.swift */,
+				A4A6DBE32415EECF006EEF5F /* TableViewVC.swift */,
+				A46F114B24161B3300B10286 /* WebViewVC.swift */,
 			);
 			path = UIVC;
 			sourceTree = "<group>";
@@ -353,6 +359,8 @@
 				A486A0272413A13E00A88059 /* OtherViewController.swift in Sources */,
 				A486A02B2413A1CD00A88059 /* LabelVC.swift in Sources */,
 				A486A0292413A1B700A88059 /* ButtonVC.swift in Sources */,
+				A4A6DBE42415EECF006EEF5F /* TableViewVC.swift in Sources */,
+				A46F114C24161B3300B10286 /* WebViewVC.swift in Sources */,
 				393604012414A8A600E1343C /* SliderVC.swift in Sources */,
 				A486A0322413A25000A88059 /* NavigationVC.swift in Sources */,
 				A4869FE92413896A00A88059 /* AppDelegate.swift in Sources */,

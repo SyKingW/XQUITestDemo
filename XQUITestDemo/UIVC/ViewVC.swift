@@ -53,6 +53,10 @@ class ViewVC: UIViewController {
         
         v1.accessibilityIdentifier = "view_1"
         
+        v1.xq_addTap(withNumberOfTapsRequired: 2) { (gesture) in
+            SVProgressHUD.showInfo(withStatus: "双击了蓝色View")
+        }
+        
         // 长按
         v1.xq_addLongPress { (gesture) in
             SVProgressHUD.showInfo(withStatus: "长按了蓝色View")
@@ -88,8 +92,6 @@ class ViewVC: UIViewController {
             }
             
         }
-        
-        
         
         // 旋转
         v1.xq_addRotation { (gesture) in
