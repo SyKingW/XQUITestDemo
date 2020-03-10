@@ -7,67 +7,71 @@
 //
 
 import XCTest
+import Photos
 
 class XQUITestDemoUITests: XCTestCase {
 
-    /// 开启自动化测试时, 配置参数
+    /// 开启自动化测试时走该方法, 一般在这里配置一些环境参数
     override func setUp() {
         print("wxq: ", #function)
 
         // 失败后是否继续
         continueAfterFailure = false
+        
+        
     }
 
-    /// app 结束时
+    /// 一开始创建时, 自带的样例(可删除，自行创建另一个)
+    /// 用来测试 App 启动时间的
+//    func testLaunchPerformance() {
+//        print("wxq: ", #function)
+//
+//        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
+//            // 性能测试, 启动6次app
+//            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
+//                print("wxq measure: ", #function)
+//                // 启动app
+//                XCUIApplication().launch()
+//            }
+//        }
+//    }
+    
+    /// 一开始创建时, 自带的样例(可删除，自行创建另一个)
+    /// 运行App，然后该如何如何点击，这些自动化测试就写在这里面
+//    func testExample() {
+//        print("wxq: ", #function)
+//
+//        self.testTabbar()
+//        self.testNavigation()
+//        self.testView()
+//        self.testLabel()
+//        self.testBtn()
+//        self.testTextField()
+//        self.testSlider()
+//        self.testSwitch()
+//        self.testTableView()
+//        self.testWebView()
+//        self.testRandomTap()
+        // 执行完之后, 会自动结束app 
+//    }
+    
+    /// 自动化结束时走该方法
     override func tearDown() {
         print("wxq: ", #function)
     }
     
-    /// 启动app测试
-    func testLaunchPerformance() {
-        print("wxq: ", #function)
-        
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-            // 性能测试, 启动6次app
-            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
-                print("wxq measure: ", #function)
-                // 启动app
-                XCUIApplication().launch()
-            }
-        }
-    }
-    
     // 初始化自己的app
-    let app = XCUIApplication()
+    lazy var app: XCUIApplication = {
+        let application = XCUIApplication()
+        // 启动app
+        application.launch()
+        return application
+    }()
     
     // 系统的 safari app
-//    let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
-    // 微信app
-//    let wechatApp = XCUIApplication.init(bundleIdentifier: "com.tencent.xin")
-
-    /// app执行的任务
-    func testExample() {
-        print("wxq: ", #function)
-        // 启动app
-        app.launch()
-        
-        // 打印当前app视图等等的信息.
-//        print(app.debugDescription)
-        
-        self.testTabbar()
-        self.testNavigation()
-        self.testView()
-        self.testLabel()
-        self.testBtn()
-        self.testTextField()
-        self.testSlider()
-        self.testSwitch()
-        self.testTableView()
-//        self.testWebView()
-//        self.testRandomTap()
-        
-        // 执行完之后, 会自动结束app 
-    }
+    //    let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
+        // 微信app
+    //    let wechatApp = XCUIApplication.init(bundleIdentifier: "com.tencent.xin")
     
     /// 测试 tabbar
     func testTabbar() {
@@ -189,7 +193,7 @@ class XQUITestDemoUITests: XCTestCase {
         
     }
     
-    /// 测试 View
+    /// 测试 Label
     func testLabel() {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
@@ -228,11 +232,6 @@ class XQUITestDemoUITests: XCTestCase {
         ///
         
         
-        
-        let backBtn = app.windows.navigationBars.buttons["首页"]
-        backBtn.tap()
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
         
     }
 
@@ -286,10 +285,7 @@ class XQUITestDemoUITests: XCTestCase {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        let backBtn = app.navigationBars.buttons["首页"]
-        backBtn.tap()
         
-        let _ = app.wait(for: .notRunning, timeout: 1)
         
     }
     
@@ -313,11 +309,6 @@ class XQUITestDemoUITests: XCTestCase {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        let backBtn = app.navigationBars.buttons["首页"]
-        backBtn.tap()
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        
     }
     
     /// 测试 switch
@@ -338,10 +329,7 @@ class XQUITestDemoUITests: XCTestCase {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        let backBtn = app.navigationBars.buttons["首页"]
-        backBtn.tap()
         
-        let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
     /// 测试 tableView
@@ -355,9 +343,19 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
         
         let tables = app.tables.firstMatch
-        // 下拉刷新
-//        tables.swipeDown()
         
+        // 删除cell
+        tables.xq_swipeLeftDeleteCell(0, deleteButtonTitle: "删除")
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        tables.xq_swipeLeftDeleteCell(3, deleteButtonTitle: "删除")
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 下拉刷新
+        tables.swipeDown()
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 滚动到某一行, 并点击
         tables.xq_scrollToElement(element: tables.cells.element(boundBy: 45))
         tables.cells.element(boundBy: 45).tap()
         
@@ -366,12 +364,7 @@ class XQUITestDemoUITests: XCTestCase {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        let backBtn = app.navigationBars.buttons["首页"]
-        backBtn.tap()
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
     }
-    
     
     /// 测试 webView
     func testWebView() {
@@ -384,15 +377,13 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
         
         // 第一次进来，网络请求该如何???
-        print(app.debugDescription)
+        print("wxq: ", app.debugDescription)
+        
+        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        print("wxq: ", springboard.debugDescription)
         
         // 没系统api取 webView 的元素??
         // 那这个干鸡儿, 用起来也太麻烦了吧
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        
-        let backBtn = app.navigationBars.buttons["首页"]
-        backBtn.tap()
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
@@ -407,6 +398,127 @@ class XQUITestDemoUITests: XCTestCase {
         
     }
     
+    
+    /// Home 键
+    func testHome() {
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 单击 Home 键
+        XCUIDevice.shared.press(.home)
+        
+        // 并没有查到如何双击 Home 键...
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 调节音量
+    func testVolume() {
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 调节音量
+        XCUIDevice.shared.press(.volumeUp)
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        XCUIDevice.shared.press(.volumeDown)
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    
+    /// 转移设备方向
+    func testDeviceOrientation() {
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 调节方向
+        // 注意, 手机要先允许转向才行
+        XCUIDevice.shared.orientation = .landscapeLeft
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 唤醒 Siri
+    func testSiri() {
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 唤醒 Siri, 并输入语句
+        // 突然唤醒 Siri, 会说话很大声, 在公司玩耍的话, 建议先调小声 😁
+        XCUIDevice.shared.siriService.activate(voiceRecognitionText: "我帅么?");
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 调用系统截图
+    func testScreenshot() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        // 截图
+        print("wxq: ", app.keys.count, app.keys.debugDescription)
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 保存图片到本地(还不行...)
+    func testSaveImage() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        // 截图
+        app.screenshot().xq_saveImageToAlbum(app.screenshot().image)
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 获取手机的桌面应用, 这个可以搞一些骚操作
+    func testSpringboard() {
+        
+        // 感觉这个对于一般的自动化测试没什么用, 不过这里就先记录着吧
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        let view = app.windows.cells.element(boundBy: 8)
+        view.tap()
+        
+        
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 获取桌面应用
+        // 注意. 第一次获取 springboard, 需要比较久的时间(我测的时候是20秒左右)才能反映过来, 并不是卡死了...
+        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        print("wxq: ", springboard.debugDescription)
+//        springboard.swipeLeft()
+        
+        
+        // 获取桌面 View
+        // 注意, 如果直接在 APP 内获取, 是获取不到桌面 View 的
+        // 需要先调用 XCUIDevice.shared.press(.home), 回到桌面后, 然后再取里面的元素
+//        springboard.otherElements.element(matching: .other, identifier: "Home screen icons")
+        
+        // 获取桌面最左边的 widget 应用 view
+//        springboard.otherElements.element(matching: .other, identifier: "WGMajorListViewControllerView")
+        
+        // 获取桌面, 底部滚动圆点, 可以通过 value 这些, 知道当前在第几页
+//        springboard.pageIndicators.element(matching: .pageIndicator, identifier: "Page control").value
+        
+        // 获取桌面, 底部 Dock 栏
+//        springboard.otherElements["Dock"]
+        
+        // 系统左上角, 返回上一个 app 按钮(就是用 scheme 跳转到其他应用时, 会出现的返回按钮)
+//        springboard.buttons.element(matching: .button, identifier: "breadcrumb").tap()
+        
+        // 网络信号强度格子
+//        springboard.otherElements["Cellular"].value
+        
+        // 也可以获取当前网络, 时间, 电量什么的..反正就是界面上的一切都能获取
+        
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 获取虚拟 Home 键
+    func testAssistiveTouch() {
+        
+    }
 }
 
 extension XCUIElement {
@@ -431,8 +543,11 @@ extension XCUIElement {
     }
 }
 
-
 extension XCUIElement {
+    
+    /// 针对 tableView 的封装
+    
+    
     
     /// 滚动到某个元素
     /// 默认向下滚动
@@ -466,6 +581,39 @@ extension XCUIElement {
         return XCUIApplication().windows.element(boundBy: 0).frame.contains(self.frame)
     }
 
+    
+    /// 左滑删除
+    /// - Parameter index: cell 的下标
+    /// - Parameter deleteButtonTitle: 删除按钮标题
+    func xq_swipeLeftDeleteCell(_ index: Int, deleteButtonTitle: String) {
+        
+        let cell = self.cells.element(boundBy: index)
+        cell.swipeLeft()
+        
+        let deleteBtn = cell.buttons[deleteButtonTitle]
+        deleteBtn.tap()
+    }
+    
 }
 
 
+extension XCUIScreenshot {
+    
+    /// 保存图片到, 相机胶卷
+    @objc func xq_saveImageToAlbum(_ image: UIImage) {
+        
+        /// 异步执行修改操作
+        PHPhotoLibrary.shared().performChanges({
+            
+            PHAssetChangeRequest.creationRequestForAsset(from: image)
+            
+        }) { (success, error) in
+            if let error = error {
+                print("保存失败: ", error)
+            } else {
+                print("保存成功")
+            }
+        }
+    }
+    
+}

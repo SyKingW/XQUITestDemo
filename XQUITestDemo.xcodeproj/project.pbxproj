@@ -24,6 +24,7 @@
 		A486A02F2413A1E900A88059 /* TextFieldVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486A02E2413A1E900A88059 /* TextFieldVC.swift */; };
 		A486A0322413A25000A88059 /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486A0312413A25000A88059 /* NavigationVC.swift */; };
 		A4A6DBE42415EECF006EEF5F /* TableViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A6DBE32415EECF006EEF5F /* TableViewVC.swift */; };
+		A4B94B7F24172FD900F4E098 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B94B7E24172FD900F4E098 /* TableViewCell.swift */; };
 		C1892A46D5B2A3FEF7CF665A /* Pods_XQUITestDemo_XQUITestDemoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C40FA9A531732E85658DCD51 /* Pods_XQUITestDemo_XQUITestDemoUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +62,8 @@
 		A486A02E2413A1E900A88059 /* TextFieldVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldVC.swift; sourceTree = "<group>"; };
 		A486A0312413A25000A88059 /* NavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		A4A6DBE32415EECF006EEF5F /* TableViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewVC.swift; sourceTree = "<group>"; };
+		A4AC118C24179A95005E01B4 /* XQUITestDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XQUITestDemo.entitlements; sourceTree = "<group>"; };
+		A4B94B7E24172FD900F4E098 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		C0DF30E05CBBBAFB5A81A67B /* Pods_XQUITestDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XQUITestDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40FA9A531732E85658DCD51 /* Pods_XQUITestDemo_XQUITestDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XQUITestDemo_XQUITestDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4289E692FDF67704D53BCF1 /* Pods-XQUITestDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XQUITestDemo.release.xcconfig"; path = "Target Support Files/Pods-XQUITestDemo/Pods-XQUITestDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -120,6 +123,7 @@
 		A4869FE72413896A00A88059 /* XQUITestDemo */ = {
 			isa = PBXGroup;
 			children = (
+				A4AC118C24179A95005E01B4 /* XQUITestDemo.entitlements */,
 				A4869FE82413896A00A88059 /* AppDelegate.swift */,
 				A4869FEC2413896A00A88059 /* ViewController.swift */,
 				A486A0262413A13E00A88059 /* OtherViewController.swift */,
@@ -152,6 +156,7 @@
 				393604002414A8A600E1343C /* SliderVC.swift */,
 				393604022414A8AE00E1343C /* SwitchVC.swift */,
 				A4A6DBE32415EECF006EEF5F /* TableViewVC.swift */,
+				A4B94B7E24172FD900F4E098 /* TableViewCell.swift */,
 				A46F114B24161B3300B10286 /* WebViewVC.swift */,
 			);
 			path = UIVC;
@@ -352,6 +357,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4B94B7F24172FD900F4E098 /* TableViewCell.swift in Sources */,
 				393604032414A8AE00E1343C /* SwitchVC.swift in Sources */,
 				A4869FED2413896A00A88059 /* ViewController.swift in Sources */,
 				A486A02D2413A1D700A88059 /* ViewVC.swift in Sources */,
@@ -524,6 +530,7 @@
 			baseConfigurationReference = 62EB26E9435D1256C2221A72 /* Pods-XQUITestDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = XQUITestDemo/XQUITestDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HYE5WA8QEX;
 				INFOPLIST_FILE = XQUITestDemo/Info.plist;
@@ -544,6 +551,7 @@
 			baseConfigurationReference = D4289E692FDF67704D53BCF1 /* Pods-XQUITestDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = XQUITestDemo/XQUITestDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HYE5WA8QEX;
 				INFOPLIST_FILE = XQUITestDemo/Info.plist;

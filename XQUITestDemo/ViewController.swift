@@ -26,6 +26,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "更多", style: .plain, target: self, action: #selector(respondsToMore))
         
         self.initTableView()
+        
+        
+        
     }
     
     func initTableView() {
@@ -53,6 +56,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             "Switch",
             "TableView",
             "WebView",
+            "Open wechat",
         ]
     }
     
@@ -92,7 +96,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.navigationController?.pushViewController(TableViewVC(), animated: true)
             
         case 7:
-            self.navigationController?.pushViewController(WebViewVC(), animated: true)
+//            self.navigationController?.pushViewController(WebViewVC(), animated: true)
+            
+            
+            let options = UNAuthorizationOptions.alert.rawValue | UNAuthorizationOptions.badge.rawValue | UNAuthorizationOptions.sound.rawValue
+            UNUserNotificationCenter.current().requestAuthorization(options: UNAuthorizationOptions(rawValue: options)) { (result, error) in
+                if let error = error {
+                    SVProgressHUD.showInfo(withStatus: "申请权限失败: \(error)")
+                }else {
+                    SVProgressHUD.showInfo(withStatus: "申请权限结果: \(result)")
+                }
+                
+            }
+            
+        case 8:
+            if let url = URL.init(string: "weixin://") {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+            
             
         default:
             break
