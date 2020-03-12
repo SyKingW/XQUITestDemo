@@ -366,6 +366,67 @@ class XQUITestDemoUITests: XCTestCase {
         
     }
     
+    
+    /// 获取手机的桌面应用, 这个可以搞一些骚操作
+    lazy var springboard: XCUIApplication = {
+        // 获取桌面应用
+        // 注意. 第一次获取 springboard, 需要比较久的时间( 我测的时候是5 ~ 20秒区间 )才能反映过来, 并不是卡死了...
+        // 初步猜测, 这个时间是跟你当前能获取的元素数量相关, 例如退到桌面, 桌面很多应用, 就可能要 20 ~ 30 秒
+        let application = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        // 这里不用 lauch()
+        return application
+    }()
+    
+    /// 测试系统按钮自动点击, 通知权限
+    func testSystemAlertNotification() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 取 cell, 根据下标取
+        let view = app.windows.cells.element(boundBy: 9)
+        view.tap()
+        
+        if self.springboard.alerts.count > 0 {
+            
+            // 测了几次...发现偶尔点击不了, 这里最好还是加上个延迟
+            let _ = app.wait(for: .notRunning, timeout: 2)
+            
+            // 注意, 我这里用的是英文系统, 所以按钮的文字也是英文.
+            // 如果中文则是'允许'这些
+            self.springboard.alerts.buttons["Allow"].tap()
+            
+            // 需要加一些延迟, 不然会连不上下面的返回操作
+            let _ = app.wait(for: .notRunning, timeout: 2)
+        }
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 打开其他APP，再跳回来
+    func testOpenOtherApp() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        let view = app.windows.cells.element(boundBy: 8)
+        view.tap()
+        
+        if self.springboard.alerts.count > 0 {
+            // 注意, 我这里用的是英文系统, 所以按钮的文字也是英文.
+            // 如果中文则是'打开', '确定'这些
+            self.springboard.alerts.buttons["Open"].tap()
+            
+            // 需要加一些延迟, 不然会连不上下面的返回操作
+            let _ = app.wait(for: .notRunning, timeout: 2)
+        }
+        
+        // 系统左上角, 返回上一个 app 按钮(就是用 scheme 跳转到其他应用时, 会出现的返回按钮)
+        let breadcrumb = self.springboard.buttons.element(matching: .button, identifier: "breadcrumb")
+        // 存在就去点击
+        if self.springboard.xq_visible(breadcrumb) {
+            breadcrumb.tap()
+        }
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
     /// 测试 webView
     func testWebView() {
         let _ = app.wait(for: .notRunning, timeout: 1)
@@ -376,11 +437,7 @@ class XQUITestDemoUITests: XCTestCase {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        // 第一次进来，网络请求该如何???
         print("wxq: ", app.debugDescription)
-        
-        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
-        print("wxq: ", springboard.debugDescription)
         
         // 没系统api取 webView 的元素??
         // 那这个干鸡儿, 用起来也太麻烦了吧
@@ -397,7 +454,6 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
         
     }
-    
     
     /// Home 键
     func testHome() {
@@ -427,7 +483,6 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
-    
     /// 转移设备方向
     func testDeviceOrientation() {
         
@@ -452,22 +507,6 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
-    /// 调用系统截图
-    func testScreenshot() {
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        // 截图
-        print("wxq: ", app.keys.count, app.keys.debugDescription)
-        let _ = app.wait(for: .notRunning, timeout: 1)
-    }
-    
-    /// 保存图片到本地(还不行...)
-    func testSaveImage() {
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        // 截图
-        app.screenshot().xq_saveImageToAlbum(app.screenshot().image)
-        let _ = app.wait(for: .notRunning, timeout: 1)
-    }
-    
     /// 获取手机的桌面应用, 这个可以搞一些骚操作
     func testSpringboard() {
         
@@ -475,16 +514,6 @@ class XQUITestDemoUITests: XCTestCase {
         
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        let view = app.windows.cells.element(boundBy: 8)
-        view.tap()
-        
-        
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        
-        // 获取桌面应用
-        // 注意. 第一次获取 springboard, 需要比较久的时间(我测的时候是20秒左右)才能反映过来, 并不是卡死了...
-        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
         print("wxq: ", springboard.debugDescription)
 //        springboard.swipeLeft()
         
@@ -515,9 +544,165 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
+    /// 退到桌面, 并打开 App Store
+    func testTapAppStore() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 点三下, 回到第二页(就是最开始那页), 三下是因为防止自己的 APP 在 group 里面
+        XCUIDevice.shared.press(.home)
+//        XCUIDevice.shared.press(.home)
+//        XCUIDevice.shared.press(.home)
+        
+        
+        let appIdentifier = "App Store"
+        
+        // 获取 App Store
+        let icon = self.springboard.icons.element(matching: .icon, identifier: appIdentifier)
+        print("wxq: ", icon.frame, self.springboard.debugDescription)
+        
+        guard icon.exists else {
+            print("桌面不存在该app")
+            return
+        }
+        
+        if icon.isHittable {
+            // 可以点击, 直接点击 点击 App Store
+            icon.tap()
+            return
+        }
+        
+        
+        let elementArr = self.springboard.windows.xq_getElement(with: .other, childrenType: .icon)
+        
+        for (index, item) in elementArr.enumerated() {
+            print("wxq: ", index, item.debugDescription)
+        }
+        
+        
+        return;
+        
+        
+//        print("wxq: ", self.springboard.debugDescription)
+        
+        let window = self.springboard.windows.element(boundBy: 1)
+        
+        /// descendants 是直接取下面所有子元素的
+        /// children 是取下一个层级的子元素
+        
+        let icons = window.icons
+        for item in 0..<icons.count {
+            
+            let icon = window.icons.element(boundBy: item)
+            
+            if icon.identifier.count > 0 || icon.label.count > 0 {
+                // 一个页面的 icon 是没有这些的
+                continue
+            }
+            
+            
+            let appIcon = icon.icons.element(matching: .icon, identifier: appIdentifier)
+            if app.exists {
+                
+            }
+            
+        }
+        
+        return;
+        
+        
+        print("当前无法点击该app")
+        
+        // 不可以点击, 那么可能是和其他应用放在一个组里面了, 或者在其他页
+        
+        // 没找出查找父视图这种的. 所以直接遍历
+        
+        for item in 0..<self.springboard.icons.count {
+            let icon = self.springboard.icons.element(boundBy: item)
+            
+            // 不可点击, 直接略过
+            if !icon.isHittable {
+                continue
+            }
+            
+            // 是指定 App, 那么直接点击
+            if icon.identifier == appIdentifier {
+                icon.tap()
+                break
+            }
+            
+            // 查看子 icon
+            let childrenIcon = icon.icons.element(matching: .icon, identifier: appIdentifier)
+            
+            /// 其实这里也能通过 app icon 下面的 DeleteButton 来判断.(只能判断非系统级别APP..系统级别APP都不给你删, 根本没这个删除按钮)
+            /// 就是不存在 DeleteButton 才是 group
+            
+            
+            ///
+            /// 这里要说一下...桌面应用的层级
+            ///
+            /// 桌面----整个桌面
+            ///     icon----某一页
+            ///         icon---某个app或者某个组
+            ///         icon---某个app或者某个组
+            ///         ...
+            ///     icon----某一页
+            ///         icon---某个app或者某个组
+            ///         ...
+            ///     icon----某一页
+            ///     ...
+            ///
+            /// 就是说, 一个页面也是icon来的...
+            ///
+            
+            // 不存在, 跳过
+            if !childrenIcon.exists {
+                continue
+            }
+            
+            // 存在了, 那么点击 icon, 再点击 childrenIcon
+            icon.tap()
+            
+            // 其实..点开了, 还要分析一下, 是否要滚动, 因为文件夹里面, 也存在着分页
+            
+            let _ = app.wait(for: .notRunning, timeout: 1)
+            print("wxq: ", self.springboard.debugDescription)
+            
+            // 点开之后, 加多一个 view, 并上面重新有一个 App Store 的 icon...苹果这设计, 很烦
+            
+            let appIcon = self.springboard.icons.element(matching: .icon, identifier: appIdentifier)
+            appIcon.tap()
+            
+            break
+        }
+        
+        // 获取页数
+        let page = self.springboard.xq_getDesktopPageControlValue()
+        print("wxq: ", page)
+        
+        
+            
+        
+        let _ = app.wait(for: .notRunning, timeout: 2)
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    
     /// 获取虚拟 Home 键
     func testAssistiveTouch() {
-        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        let application = XCUIApplication.init(bundleIdentifier: "com.apple.accessibility")
+        print("wxq: ", application.description)
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    
+    /// 调用系统截图, 没找到
+    func testScreenshot() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        // 截图
+        print("wxq: ", app.keys.count, app.keys.debugDescription)
+        let _ = app.wait(for: .notRunning, timeout: 1)
     }
 }
 
@@ -548,7 +733,6 @@ extension XCUIElement {
     /// 针对 tableView 的封装
     
     
-    
     /// 滚动到某个元素
     /// 默认向下滚动
     /// 这里可以再封装一下的，比如可以向上滚动, 可以无限循环上下滚动等等...
@@ -556,7 +740,9 @@ extension XCUIElement {
     /// - Parameter isAutoStop: true 滚动到最后一个, 自动停下来
     func xq_scrollToElement(element: XCUIElement, isAutoStop: Bool = true) {
         // 一直滚动到某个元素出现为止
-        while !element.xq_visible() {
+//        while !element.xq_visible() {
+        // 可被点击为止
+        while !element.isHittable {
             
             // 滚动到最后就停下来
             if isAutoStop && self.elementType == .table {
@@ -570,7 +756,7 @@ extension XCUIElement {
         }
     }
     
-    /// 是否已经显示在当前界面中
+    /// 是否已经显示在当前 app windows 界面中
     func xq_visible() -> Bool {
         
         guard self.exists && !self.frame.isEmpty else {
@@ -580,6 +766,26 @@ extension XCUIElement {
         
         return XCUIApplication().windows.element(boundBy: 0).frame.contains(self.frame)
     }
+    
+    /// 某个元素, 是否已经显示在当前元素中
+    /// - Parameter element: 某个子元素
+    func xq_visible(_ element: XCUIElement) -> Bool {
+        
+        guard self.exists && !self.frame.isEmpty else {
+            return false
+        }
+        
+        if !element.exists {
+            return false
+        }
+        
+        guard self.exists && !self.frame.isEmpty else {
+            return false
+            
+        }
+        
+        return self.frame.contains(element.frame)
+    }
 
     
     /// 左滑删除
@@ -588,14 +794,109 @@ extension XCUIElement {
     func xq_swipeLeftDeleteCell(_ index: Int, deleteButtonTitle: String) {
         
         let cell = self.cells.element(boundBy: index)
+        
+        guard cell.isHittable else {
+            print("无法左滑")
+            return
+        }
+        
         cell.swipeLeft()
         
+        
         let deleteBtn = cell.buttons[deleteButtonTitle]
+        
+        guard deleteBtn.isHittable else {
+            print("无法点击")
+            return
+        }
+        
         deleteBtn.tap()
+        
     }
     
 }
 
+extension XCUIElement {
+    
+    struct XQDesktopPageControlValue {
+        var currentPage = 0
+        var totalPage = 0
+        
+        init(currentPage: Int = 0, totalPage: Int = 0) {
+            self.currentPage = currentPage
+            self.totalPage = totalPage
+        }
+    }
+    
+    /// 获取手机桌面有多少页和当前在第几页
+    /// 如果用获取桌面有多少页 let application = XCUIApplication.init(bundleIdentifier: "com.apple.springboard") 来调用才行
+    /// 并且调用之前, 要回先到手机桌面
+    func xq_getDesktopPageControlValue() -> XQDesktopPageControlValue {
+        
+        // 获取桌面, 底部滚动圆点, 可以通过 value 这些, 知道当前在第几页
+        let pageIndicator = self.pageIndicators.element(matching: .pageIndicator, identifier: "Page control")
+        if pageIndicator.isHittable, let value = pageIndicator.value as? String {
+            
+            // Page 2 of 5
+            var str = value.replacingOccurrences(of: "Page", with: "")
+            str = str.replacingOccurrences(of: " ", with: "")
+            let strArr = str.components(separatedBy: "of")
+            
+            //            print("wxq: ", value, strArr)
+            
+            if strArr.count == 2,
+                var currentPage = Int(strArr[0]), currentPage > 0,
+                var totalPage = Int(strArr[1]), totalPage > 0 {
+                
+                // 因为直接取的话, 不是从 0下标 开始, 而且是从 1 开始
+                currentPage -= 1
+                totalPage -= 1
+                
+                //                print("页数: ", currentPage, totalPage)
+                
+                return XQDesktopPageControlValue.init(currentPage: currentPage, totalPage: totalPage)
+            }
+            
+        }
+        
+        return XQDesktopPageControlValue.init(currentPage: 0, totalPage: 0)
+    }
+}
+
+
+extension XCUIElement {
+    
+    /// 获取手机桌面有多少页和当前在第几页
+    /// 如果用获取桌面有多少页 let application = XCUIApplication.init(bundleIdentifier: "com.apple.springboard") 来调用才行
+    /// 并且调用之前, 要回先到手机桌面
+    func xq_getElement(with type: ElementType) {
+        
+    }
+}
+
+extension XCUIElementQuery {
+    
+    /// 查询 包含 某个类型子元素 的 元素
+    /// - Parameters:
+    ///   - type: 元素类型
+    ///   - childrenType: 子元素
+    func xq_getElement(with type: XCUIElement.ElementType, childrenType: XCUIElement.ElementType) -> [XCUIElement] {
+        
+        let fTypeQuery = self.descendants(matching: type)
+        
+        var resultArr = [XCUIElement]()
+        
+        for item in 0..<fTypeQuery.count {
+            let tTypeQuery = fTypeQuery.element(boundBy: item)
+            if tTypeQuery.children(matching: childrenType).count > 0 {
+                resultArr.append(tTypeQuery)
+            }
+        }
+        
+        return resultArr
+    }
+    
+}
 
 extension XCUIScreenshot {
     
@@ -617,3 +918,5 @@ extension XCUIScreenshot {
     }
     
 }
+
+

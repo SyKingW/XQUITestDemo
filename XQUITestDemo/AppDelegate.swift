@@ -25,11 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        SVProgressHUD.showInfo(withStatus: "挂到后台了")
+//        SVProgressHUD.showInfo(withStatus: "挂到后台了")
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        SVProgressHUD.showInfo(withStatus: "挂起App")
+//        SVProgressHUD.showInfo(withStatus: "挂起App")
     }
     
 
