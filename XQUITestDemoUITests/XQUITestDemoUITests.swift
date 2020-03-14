@@ -572,7 +572,7 @@ class XQUITestDemoUITests: XCTestCase {
         }
         
         
-        let elementArr = self.springboard.windows.xq_getElement(with: .other, childrenType: .icon)
+        let elementArr = self.springboard.windows.xq_getElements(with: .other, childrenType: .icon)
         
         for (index, item) in elementArr.enumerated() {
             print("wxq: ", index, item.debugDescription)
@@ -880,7 +880,7 @@ extension XCUIElementQuery {
     /// - Parameters:
     ///   - type: 元素类型
     ///   - childrenType: 子元素
-    func xq_getElement(with type: XCUIElement.ElementType, childrenType: XCUIElement.ElementType) -> [XCUIElement] {
+    func xq_getElements(with type: XCUIElement.ElementType, childrenType: XCUIElement.ElementType) -> [XCUIElement] {
         
         let fTypeQuery = self.descendants(matching: type)
         
