@@ -550,15 +550,15 @@ class XQUITestDemoUITests: XCTestCase {
         
         // 点三下, 回到第二页(就是最开始那页), 三下是因为防止自己的 APP 在 group 里面
         XCUIDevice.shared.press(.home)
-//        XCUIDevice.shared.press(.home)
-//        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
         
         
         let appIdentifier = "App Store"
         
         // 获取 App Store
         let icon = self.springboard.icons.element(matching: .icon, identifier: appIdentifier)
-        print("wxq: ", icon.frame, self.springboard.debugDescription)
+        print("wxq: ", self.springboard.debugDescription)
         
         guard icon.exists else {
             print("桌面不存在该app")
@@ -572,119 +572,48 @@ class XQUITestDemoUITests: XCTestCase {
         }
         
         
-        let elementArr = self.springboard.windows.xq_getElements(with: .other, childrenType: .icon)
+        // 获取桌面 element
+        let elementArr = self.springboard.windows.xq_getElements(with: .other, childrenTypes: .icon)
         
-        for (index, item) in elementArr.enumerated() {
-            print("wxq: ", index, item.debugDescription)
+        if elementArr.count != 2 {
+            print("在我学习的时候, iOS 13 返回桌面, 是只有两个拥有 icon 的. 如果不是的话, 可能是苹果改了")
+            return
+        }
+        
+        var desktopElement : XCUIElement!
+        // 不需要取 Dock
+        if elementArr[0].label == "Dock" {
+            desktopElement = elementArr[1]
+        }else {
+            desktopElement = elementArr[0]
+        }
+        
+        // 点击 app
+        let model = desktopElement.xq_queryAppAtDesktop(with: appIdentifier)
+        
+        if model.openAppSuccess {
+            return
+        }
+        
+        guard let _ = model.folderIcon else {
+            print("找不到app")
+            return
         }
         
         
-        return;
+        // 点击失败, 那就是点击文件夹了, 需要再次调用
         
+        // 点击文件夹之后, 会多出一个文件夹的元素, 要点app, 就得从这里面去点
+        let folderElementArr = self.springboard.windows.xq_getElements(with: .other, childrenTypes: .textField, .icon, .pageIndicator)
         
-//        print("wxq: ", self.springboard.debugDescription)
-        
-        let window = self.springboard.windows.element(boundBy: 1)
-        
-        /// descendants 是直接取下面所有子元素的
-        /// children 是取下一个层级的子元素
-        
-        let icons = window.icons
-        for item in 0..<icons.count {
-            
-            let icon = window.icons.element(boundBy: item)
-            
-            if icon.identifier.count > 0 || icon.label.count > 0 {
-                // 一个页面的 icon 是没有这些的
-                continue
-            }
-            
-            
-            let appIcon = icon.icons.element(matching: .icon, identifier: appIdentifier)
-            if app.exists {
-                
-            }
-            
+        guard let folderElement = folderElementArr.first else {
+            print("没有找到点开文件夹之后的元素")
+            return
         }
         
-        return;
+        // 点击 app
+        let _ = folderElement.xq_queryAppAtDesktop(with: appIdentifier)
         
-        
-        print("当前无法点击该app")
-        
-        // 不可以点击, 那么可能是和其他应用放在一个组里面了, 或者在其他页
-        
-        // 没找出查找父视图这种的. 所以直接遍历
-        
-        for item in 0..<self.springboard.icons.count {
-            let icon = self.springboard.icons.element(boundBy: item)
-            
-            // 不可点击, 直接略过
-            if !icon.isHittable {
-                continue
-            }
-            
-            // 是指定 App, 那么直接点击
-            if icon.identifier == appIdentifier {
-                icon.tap()
-                break
-            }
-            
-            // 查看子 icon
-            let childrenIcon = icon.icons.element(matching: .icon, identifier: appIdentifier)
-            
-            /// 其实这里也能通过 app icon 下面的 DeleteButton 来判断.(只能判断非系统级别APP..系统级别APP都不给你删, 根本没这个删除按钮)
-            /// 就是不存在 DeleteButton 才是 group
-            
-            
-            ///
-            /// 这里要说一下...桌面应用的层级
-            ///
-            /// 桌面----整个桌面
-            ///     icon----某一页
-            ///         icon---某个app或者某个组
-            ///         icon---某个app或者某个组
-            ///         ...
-            ///     icon----某一页
-            ///         icon---某个app或者某个组
-            ///         ...
-            ///     icon----某一页
-            ///     ...
-            ///
-            /// 就是说, 一个页面也是icon来的...
-            ///
-            
-            // 不存在, 跳过
-            if !childrenIcon.exists {
-                continue
-            }
-            
-            // 存在了, 那么点击 icon, 再点击 childrenIcon
-            icon.tap()
-            
-            // 其实..点开了, 还要分析一下, 是否要滚动, 因为文件夹里面, 也存在着分页
-            
-            let _ = app.wait(for: .notRunning, timeout: 1)
-            print("wxq: ", self.springboard.debugDescription)
-            
-            // 点开之后, 加多一个 view, 并上面重新有一个 App Store 的 icon...苹果这设计, 很烦
-            
-            let appIcon = self.springboard.icons.element(matching: .icon, identifier: appIdentifier)
-            appIcon.tap()
-            
-            break
-        }
-        
-        // 获取页数
-        let page = self.springboard.xq_getDesktopPageControlValue()
-        print("wxq: ", page)
-        
-        
-            
-        
-        let _ = app.wait(for: .notRunning, timeout: 2)
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
     
@@ -819,7 +748,9 @@ extension XCUIElement {
 extension XCUIElement {
     
     struct XQDesktopPageControlValue {
+        /// 当前页数下标, 从1开始的
         var currentPage = 0
+        /// 总页数下标, 从1开始的
         var totalPage = 0
         
         init(currentPage: Int = 0, totalPage: Int = 0) {
@@ -849,8 +780,8 @@ extension XCUIElement {
                 var totalPage = Int(strArr[1]), totalPage > 0 {
                 
                 // 因为直接取的话, 不是从 0下标 开始, 而且是从 1 开始
-                currentPage -= 1
-                totalPage -= 1
+//                currentPage -= 1
+//                totalPage -= 1
                 
                 //                print("页数: ", currentPage, totalPage)
                 
@@ -874,13 +805,212 @@ extension XCUIElement {
     }
 }
 
+
+extension XCUIElement {
+    
+    /// 点击桌面app
+    /// - Parameter appIdentifier: app 在桌面的唯一标识, 例如 应用商店就是 "App Store"
+    func xq_tapDesktopApp(with appIdentifier: String) {
+        
+        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        
+        // 点三下, 回到第二页(就是最开始那页), 三下是因为防止自己的 APP 在 group 里面
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
+        
+        
+        // 获取 App Store
+        let icon = springboard.icons.element(matching: .icon, identifier: appIdentifier)
+//        print("wxq: ", springboard.debugDescription)
+        
+        guard icon.exists else {
+            print("桌面不存在该app")
+            return
+        }
+        
+        if icon.isHittable {
+            // 可以点击, 直接点击 点击 App Store
+            icon.tap()
+            return
+        }
+        
+        
+        // 获取桌面 element
+        let elementArr = springboard.windows.xq_getElements(with: .other, childrenTypes: .icon)
+        
+        if elementArr.count != 2 {
+            print("在我学习的时候, iOS 13 返回桌面, 是只有两个拥有 icon 的. 如果不是的话, 可能是苹果改了")
+            return
+        }
+        
+        var desktopElement : XCUIElement!
+        // 不需要取 Dock
+        if elementArr[0].label == "Dock" {
+            desktopElement = elementArr[1]
+        }else {
+            desktopElement = elementArr[0]
+        }
+        
+        // 点击 app
+        let model = desktopElement.xq_queryAppAtDesktop(with: appIdentifier)
+        
+        if model.openAppSuccess {
+            return
+        }
+        
+        guard let _ = model.folderIcon else {
+            print("找不到app")
+            return
+        }
+        
+        
+        // 点击失败, 那就是点击文件夹了, 需要再次调用
+        
+        // 点击文件夹之后, 会多出一个文件夹的元素, 要点app, 就得从这里面去点
+        let folderElementArr = springboard.windows.xq_getElements(with: .other, childrenTypes: .textField, .icon, .pageIndicator)
+        
+        guard let folderElement = folderElementArr.first else {
+            print("没有找到点开文件夹之后的元素")
+            return
+        }
+        
+        // 点击 app
+        let _ = folderElement.xq_queryAppAtDesktop(with: appIdentifier)
+        
+    }
+    
+    
+    struct XQQueryAppAtDesktopModel {
+        /// app 所在的页数
+        var appPageIndex = -1
+        /// app 所在的桌面
+        var desktopIcon: XCUIElement?
+        /// 要点击的 app icon
+        var appIcon: XCUIElement?
+        
+        /// app 所在的文件夹
+        /// 如果 App 是在二级目录, 那么该属性就会存在
+        var folderIcon: XCUIElement?
+        
+        /// 是否成功打开 app
+        var openAppSuccess = false
+    }
+    
+    /// 用桌面元素调用, 然后自动找到 app, 并且点击
+    /// 注意, 如果 app 是在文件夹里面, 就不是直接在第一级, 那么就只会点击开所在的文件夹.
+    /// - Parameter appIdentifier: app 的 id
+    func xq_queryAppAtDesktop(with appIdentifier: String) -> XQQueryAppAtDesktopModel {
+        
+        var model = XQQueryAppAtDesktopModel()
+        
+        // 获取 App Store
+        let icon = self.icons.element(matching: .icon, identifier: appIdentifier)
+        
+        // 不存在 app
+        guard icon.exists else {
+            print("桌面不存在该app")
+            return model
+        }
+        
+        // 可以点击, 直接点击 点击 App Store
+        if icon.isHittable {
+            icon.tap()
+            model.appIcon = icon
+            model.openAppSuccess = true
+            return model
+        }
+        
+        // 所有桌面元素
+        let desktopIcons = self.children(matching: .icon)
+        
+        for index in 0..<desktopIcons.count {
+            let dIcon = desktopIcons.element(boundBy: index)
+            let aIcon = dIcon.icons.element(matching: .icon, identifier: appIdentifier)
+            if aIcon.exists {
+                // 存在
+                model.appPageIndex = index
+                model.appIcon = aIcon
+                model.desktopIcon = dIcon
+                break
+            }
+        }
+        
+        if model.appPageIndex == -1 {
+            print("并没有在桌面找到该App")
+            return model
+        }
+        
+        
+        
+        let pageValue = self.xq_getDesktopPageControlValue()
+        
+        var currentPage = pageValue.currentPage
+        // 因为首页最左边会多出一页, 这里其实就是判断是否是首页
+        if desktopIcons.count < pageValue.totalPage {
+            currentPage -= (pageValue.totalPage - desktopIcons.count)
+        }
+        
+        // 下标是从 1 开始, 还要减多一次
+        currentPage -= 1
+        
+        print("当前桌面页数: \(pageValue.currentPage)\\\(pageValue.totalPage), \(desktopIcons.count)")
+        print("app 在第\(model.appPageIndex)页, 当前桌面第\(currentPage)页")
+        
+        // 找到了, 然后滑动到那边
+        if currentPage > model.appPageIndex {
+            for _ in model.appPageIndex..<currentPage {
+                self.swipeRight()
+            }
+        }else if currentPage < model.appPageIndex {
+            for _ in currentPage..<model.appPageIndex {
+                self.swipeLeft()
+            }
+        }
+        
+        // 直接在桌面上, 可以点击
+        if model.appIcon?.isHittable ?? false {
+            model.appIcon?.tap()
+            model.openAppSuccess = true
+            return model
+        }
+        
+        // 还是不可点击, 那么就是在文件夹里面了.
+        
+        // app 所在的文件夹
+        var folderIcon: XCUIElement?
+        
+        let currentDesktopIcons = model.desktopIcon?.children(matching: .icon)
+        for index in 0..<(currentDesktopIcons?.count ?? 0) {
+            // 获取桌面第一层级应用
+            let fIcon = currentDesktopIcons?.element(boundBy: index)
+            let aIcon = fIcon?.icons.element(matching: .icon, identifier: appIdentifier)
+            if aIcon?.exists ?? false {
+                // 存在
+                folderIcon = fIcon
+                break
+            }
+        }
+        
+        // 点击文件夹
+        folderIcon?.tap()
+        model.folderIcon = folderIcon
+        
+        return model
+    }
+    
+}
+
 extension XCUIElementQuery {
     
-    /// 查询 包含 某个类型子元素 的 元素
+    
+    
+    
+    /// 查询 包含 某些类型 子元素 的 元素
     /// - Parameters:
     ///   - type: 元素类型
-    ///   - childrenType: 子元素
-    func xq_getElements(with type: XCUIElement.ElementType, childrenType: XCUIElement.ElementType) -> [XCUIElement] {
+    ///   - childrenTypes: 子元素
+    func xq_getElements(with type: XCUIElement.ElementType, childrenTypes: XCUIElement.ElementType...) -> [XCUIElement] {
         
         let fTypeQuery = self.descendants(matching: type)
         
@@ -888,9 +1018,19 @@ extension XCUIElementQuery {
         
         for item in 0..<fTypeQuery.count {
             let tTypeQuery = fTypeQuery.element(boundBy: item)
-            if tTypeQuery.children(matching: childrenType).count > 0 {
+            
+            var isAppend = true
+            for childrenType in childrenTypes {
+                if tTypeQuery.children(matching: childrenType).count == 0 {
+                    isAppend = false
+                    break
+                }
+            }
+            
+            if isAppend {
                 resultArr.append(tTypeQuery)
             }
+            
         }
         
         return resultArr
