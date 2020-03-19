@@ -9,6 +9,7 @@
 import UIKit
 import SnapKit
 import SVProgressHUD
+import XQAlert
 
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -58,6 +59,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             "WebView",
             "打开微信, 然后再跳转回来(还会自动点击第一次跳转的系统确定按钮)",
             "申请通知权限, 自动点击系统的确定按钮",
+            "Alert",
+            "AlertActionSheet",
         ]
     }
     
@@ -106,7 +109,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
         case 9:
-            
             let options = UNAuthorizationOptions.alert.rawValue | UNAuthorizationOptions.badge.rawValue | UNAuthorizationOptions.sound.rawValue
             UNUserNotificationCenter.current().requestAuthorization(options: UNAuthorizationOptions(rawValue: options)) { (result, error) in
                 DispatchQueue.main.async {
@@ -118,6 +120,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
             
+        case 10:
+            XQSystemAlert.alert(withTitle: "弹框", message: "副标题", contentArr: ["确定"], cancelText: "取消", vc: self, contentCallback: { (alert, index) in
+                SVProgressHUD.showInfo(withStatus: "点击了确定")
+            }) { (alert) in
+                SVProgressHUD.showInfo(withStatus: "点击了取消")
+            }
+            
+            
+        case 11:
+            XQSystemAlert.actionSheet(withTitle: "弹框", message: "副标题", contentArr: ["0", "1", "2"], cancelText: "取消", vc: self, contentCallback: { (alert, index) in
+                SVProgressHUD.showInfo(withStatus: "点击了内容, 第\(index)个")
+            }) { (alert) in
+                SVProgressHUD.showInfo(withStatus: "点击了取消")
+            }
             
         default:
             break

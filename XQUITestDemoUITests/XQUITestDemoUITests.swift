@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import Photos
 
 class XQUITestDemoUITests: XCTestCase {
 
@@ -17,7 +16,6 @@ class XQUITestDemoUITests: XCTestCase {
 
         // 失败后是否继续
         continueAfterFailure = false
-        
         
     }
 
@@ -60,18 +58,33 @@ class XQUITestDemoUITests: XCTestCase {
         print("wxq: ", #function)
     }
     
-    // 初始化自己的app
+    /// 初始化自己的app
     lazy var app: XCUIApplication = {
         let application = XCUIApplication()
+        // 设置环境. 要在 launch 之前去设置
+        application.launchEnvironment = ["test": "11111"]
         // 启动app
         application.launch()
         return application
     }()
     
-    // 系统的 safari app
-    //    let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
-        // 微信app
+    
+    /// 获取手机的桌面应用, 这个可以搞一些骚操作
+    lazy var springboard: XCUIApplication = {
+        // 获取桌面应用
+        // 注意. 第一次获取 springboard, 需要比较久的时间( 我测的时候是5 ~ 20秒区间 )才能反映过来, 并不是卡死了...
+        // 初步猜测, 这个时间是跟你当前能获取的元素数量相关, 例如退到桌面, 桌面很多应用, 就可能要 20 ~ 30 秒
+        let application = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        // 这里不用 lauch()
+        return application
+    }()
+    
+    /// 系统的 safari app
+//        let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
+        /// 微信app
     //    let wechatApp = XCUIApplication.init(bundleIdentifier: "com.tencent.xin")
+    
+    // MARK: - APP内部测试
     
     /// 测试 tabbar
     func testTabbar() {
@@ -85,12 +98,15 @@ class XQUITestDemoUITests: XCTestCase {
         // 点击视图
         tabbar.tap()
         
+        print("wxq: ", app.debugDescription)
+        
         let _ = app.wait(for: .notRunning, timeout: 1)
         
         let tabbar1 = app.windows.tabBars.buttons["首页"]
         tabbar1.tap()
         
         let _ = app.wait(for: .notRunning, timeout: 1)
+        
     }
     
     /// 测试 navigation
@@ -366,16 +382,42 @@ class XQUITestDemoUITests: XCTestCase {
         
     }
     
+    /// 测试 Alert
+    func testAlert() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 取 cell, 根据下标取
+        let view = app.windows.cells.element(boundBy: 10)
+        view.tap()
+        
+        print("wxq: ", app.debugDescription)
+        
+        app.xq_tapAlert(index: 1)
+        
+        let _ = app.wait(for: .notRunning, timeout: 2)
+    }
     
-    /// 获取手机的桌面应用, 这个可以搞一些骚操作
-    lazy var springboard: XCUIApplication = {
-        // 获取桌面应用
-        // 注意. 第一次获取 springboard, 需要比较久的时间( 我测的时候是5 ~ 20秒区间 )才能反映过来, 并不是卡死了...
-        // 初步猜测, 这个时间是跟你当前能获取的元素数量相关, 例如退到桌面, 桌面很多应用, 就可能要 20 ~ 30 秒
-        let application = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
-        // 这里不用 lauch()
-        return application
-    }()
+    /// 测试 webView
+    func testWebView() {
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        // 取 cell, 根据下标取
+        let view = app.windows.cells.element(boundBy: 7)
+        view.tap()
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        print("wxq: ", app.debugDescription)
+        
+        // 没系统api取 webView 的元素??
+        // 那这个干鸡儿, 用起来也太麻烦了吧
+        
+        let _ = app.wait(for: .notRunning, timeout: 1)
+        
+        
+    }
+    
+    // MARK: - 尝试 APP 外部的测试
     
     /// 测试系统按钮自动点击, 通知权限
     func testSystemAlertNotification() {
@@ -385,23 +427,17 @@ class XQUITestDemoUITests: XCTestCase {
         let view = app.windows.cells.element(boundBy: 9)
         view.tap()
         
-        if self.springboard.alerts.count > 0 {
-            
-            // 测了几次...发现偶尔点击不了, 这里最好还是加上个延迟
-            let _ = app.wait(for: .notRunning, timeout: 2)
-            
-            // 注意, 我这里用的是英文系统, 所以按钮的文字也是英文.
-            // 如果中文则是'允许'这些
-            self.springboard.alerts.buttons["Allow"].tap()
-            
-            // 需要加一些延迟, 不然会连不上下面的返回操作
-            let _ = app.wait(for: .notRunning, timeout: 2)
-        }
+        // 注意, 我这里用的是英文系统, 所以按钮的文字也是英文.
+        // 如果中文则是'允许'这些
+//        self.xq_tapSystemAlert(buttonTitle: "Allow")
         
-        let _ = app.wait(for: .notRunning, timeout: 1)
+        self.xq_tapSystemAlert(index: 1)
+        
+        
+        let _ = app.wait(for: .notRunning, timeout: 3)
     }
     
-    /// 打开其他APP，再跳回来
+    /// scheme 打开其他APP，再跳回来
     func testOpenOtherApp() {
         let _ = app.wait(for: .notRunning, timeout: 1)
         
@@ -425,26 +461,6 @@ class XQUITestDemoUITests: XCTestCase {
         }
         
         let _ = app.wait(for: .notRunning, timeout: 1)
-    }
-    
-    /// 测试 webView
-    func testWebView() {
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        
-        // 取 cell, 根据下标取
-        let view = app.windows.cells.element(boundBy: 7)
-        view.tap()
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        
-        print("wxq: ", app.debugDescription)
-        
-        // 没系统api取 webView 的元素??
-        // 那这个干鸡儿, 用起来也太麻烦了吧
-        
-        let _ = app.wait(for: .notRunning, timeout: 1)
-        
-        
     }
     
     /// 测试随机点击
@@ -544,87 +560,79 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
-    /// 退到桌面, 并打开 App Store
+    /// 退到桌面, 并打开 App Store, 模拟人手动操作
     func testTapAppStore() {
         let _ = app.wait(for: .notRunning, timeout: 1)
         
-        // 点三下, 回到第二页(就是最开始那页), 三下是因为防止自己的 APP 在 group 里面
-        XCUIDevice.shared.press(.home)
-        XCUIDevice.shared.press(.home)
-        XCUIDevice.shared.press(.home)
-        
-        
         let appIdentifier = "App Store"
+        // 封装成一个方法了, 只要传入 id, 就能点击桌面APP.
+        XCUIElement.xq_tapDesktopApp(with: appIdentifier)
         
-        // 获取 App Store
-        let icon = self.springboard.icons.element(matching: .icon, identifier: appIdentifier)
-        print("wxq: ", self.springboard.debugDescription)
+        // 其实还有其他方法, 可以看 testLaunchOtherApp() 这个方法, 这个的话, 就更加方便.
+        // 不过就不是模拟人来点击的感觉
         
-        guard icon.exists else {
-            print("桌面不存在该app")
+        let _ = app.wait(for: .notRunning, timeout: 1)
+    }
+    
+    /// 打开其他app
+    func testLaunchOtherApp() {
+        let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
+        
+        print("wxq: ", sefariApp.state)
+        
+        // 判断这个 app 是否已经启动
+        // 就是双按 Home 键，然后把 APP 划掉, 就属于不存在
+        if !sefariApp.exists {
+            sefariApp.launch()
             return
         }
         
-        if icon.isHittable {
-            // 可以点击, 直接点击 点击 App Store
-            icon.tap()
-            return
+        switch sefariApp.state {
+            
+        case .runningBackgroundSuspended:
+            // 就是比如你打开了 Safari，然后再打开 App Store
+            // 然后你双按 Home 键, 这个时候, 就是 runningBackgroundSuspended 状态
+            print("后台挂起")
+            sefariApp.activate()
+            break
+            
+        case .runningBackground:
+            print("后台运行")
+            sefariApp.activate()
+            break
+
+        case .runningForeground:
+            print("前台运行")
+            break
+            
+        case .notRunning:
+            // 这个还不清楚. 估计是开了很多应用, 然后内存不足, 停掉了APP
+            print("没在运行")
+            sefariApp.activate()
+            break
+            
+            // 无法判断状态, 都重新运行
+        case .unknown:
+            print("未知状态")
+        default:
+            // 启动App
+            sefariApp.launch()
+            break
         }
         
-        
-        // 获取桌面 element
-        let elementArr = self.springboard.windows.xq_getElements(with: .other, childrenTypes: .icon)
-        
-        if elementArr.count != 2 {
-            print("在我学习的时候, iOS 13 返回桌面, 是只有两个拥有 icon 的. 如果不是的话, 可能是苹果改了")
-            return
-        }
-        
-        var desktopElement : XCUIElement!
-        // 不需要取 Dock
-        if elementArr[0].label == "Dock" {
-            desktopElement = elementArr[1]
-        }else {
-            desktopElement = elementArr[0]
-        }
-        
-        // 点击 app
-        let model = desktopElement.xq_queryAppAtDesktop(with: appIdentifier)
-        
-        if model.openAppSuccess {
-            return
-        }
-        
-        guard let _ = model.folderIcon else {
-            print("找不到app")
-            return
-        }
+        print("wxq: ", sefariApp.state)
         
         
-        // 点击失败, 那就是点击文件夹了, 需要再次调用
-        
-        // 点击文件夹之后, 会多出一个文件夹的元素, 要点app, 就得从这里面去点
-        let folderElementArr = self.springboard.windows.xq_getElements(with: .other, childrenTypes: .textField, .icon, .pageIndicator)
-        
-        guard let folderElement = folderElementArr.first else {
-            print("没有找到点开文件夹之后的元素")
-            return
-        }
-        
-        // 点击 app
-        let _ = folderElement.xq_queryAppAtDesktop(with: appIdentifier)
         
     }
     
-    
-    /// 获取虚拟 Home 键
+    /// 获取虚拟 Home 键, 没找到
     func testAssistiveTouch() {
         let _ = app.wait(for: .notRunning, timeout: 1)
         let application = XCUIApplication.init(bundleIdentifier: "com.apple.accessibility")
         print("wxq: ", application.description)
         let _ = app.wait(for: .notRunning, timeout: 1)
     }
-    
     
     /// 调用系统截图, 没找到
     func testScreenshot() {
@@ -809,8 +817,9 @@ extension XCUIElement {
 extension XCUIElement {
     
     /// 点击桌面app
+    /// 等待慢...是正常的, 因为获取桌面 springboard 比较慢
     /// - Parameter appIdentifier: app 在桌面的唯一标识, 例如 应用商店就是 "App Store"
-    func xq_tapDesktopApp(with appIdentifier: String) {
+    static func xq_tapDesktopApp(with appIdentifier: String) {
         
         let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
         
@@ -875,9 +884,8 @@ extension XCUIElement {
             return
         }
         
-        // 点击 app
+        // 再次去从文件夹里面找 app 点击
         let _ = folderElement.xq_queryAppAtDesktop(with: appIdentifier)
-        
     }
     
     
@@ -1038,25 +1046,65 @@ extension XCUIElementQuery {
     
 }
 
-extension XCUIScreenshot {
+
+
+extension XCTestCase {
     
-    /// 保存图片到, 相机胶卷
-    @objc func xq_saveImageToAlbum(_ image: UIImage) {
-        
-        /// 异步执行修改操作
-        PHPhotoLibrary.shared().performChanges({
+    /// 点击系统弹框
+    /// - Parameter buttonTitle: 按钮的 label
+    func xq_tapSystemAlert(buttonTitle: String) {
+        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        springboard.xq_tapAlert(buttonTitle: buttonTitle)
+    }
+    
+    /// 点击系统弹框
+    /// - Parameter index: 按钮的下标.
+    /// 下标是从左边开始算起, 0为起始下标.   就比如通知权限, 要同意的话, 就传入 1
+    func xq_tapSystemAlert(index: Int) {
+        let springboard = XCUIApplication.init(bundleIdentifier: "com.apple.springboard")
+        springboard.xq_tapAlert(index: index)
+    }
+    
+}
+
+extension XCUIApplication {
+    
+    ///
+    /// 注意, actionSheet 的弹框是没办法调用这个点击的.
+    /// 因为 actionSheet 是用两个 ScrollView 组成...并且系统不认为他是一个 alert...
+    ///
+    
+    
+    /// 点击弹框
+    /// - Parameter buttonTitle: 按钮的 label
+    func xq_tapAlert(buttonTitle: String) {
+        let alerts = self.windows.alerts
+        if alerts.count > 0 {
             
-            PHAssetChangeRequest.creationRequestForAsset(from: image)
+            // 测了几次...发现偶尔点击不了, 这里最好还是加上个延迟
+            let _ = self.wait(for: .notRunning, timeout: 1)
             
-        }) { (success, error) in
-            if let error = error {
-                print("保存失败: ", error)
-            } else {
-                print("保存成功")
-            }
+            alerts.buttons[buttonTitle].tap()
+            
+            // 需要加一些延迟, 不然会连不上下面的返回操作
+            let _ = self.wait(for: .notRunning, timeout: 1)
+        }
+    }
+    
+    /// 点击弹框
+    /// - Parameter index: 按钮的下标.
+    /// 下标是从左边开始算起, 0为起始下标.
+    func xq_tapAlert(index: Int) {
+        let alerts = self.windows.alerts
+        if alerts.count > 0 {
+            let _ = self.wait(for: .notRunning, timeout: 1)
+            alerts.buttons.element(boundBy: index).tap()
+            let _ = self.wait(for: .notRunning, timeout: 1)
         }
     }
     
 }
+
+
 
 

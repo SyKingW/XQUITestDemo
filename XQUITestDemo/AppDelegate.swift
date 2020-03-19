@@ -17,8 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-//        self.window?.rootViewController = ViewController()
-//        self.window?.makeKeyAndVisible()
+        
+        let environment = ProcessInfo.processInfo.environment
+        print("wxq: ", environment)
+
+        
+        
+        if let value = environment["test"] {
+            SVProgressHUD.showInfo(withStatus: "目前是自动化测试: \(value)")
+        }else {
+            SVProgressHUD.showInfo(withStatus: "正常启动")
+        }
         
         return true
     }
