@@ -80,7 +80,7 @@ class XQUITestDemoUITests: XCTestCase {
     }()
     
     /// 系统的 safari app
-//        let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
+//        let safariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
         /// 微信app
     //    let wechatApp = XCUIApplication.init(bundleIdentifier: "com.tencent.xin")
     
@@ -136,7 +136,7 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
     }
     
-    /// 测试 View
+    /// 测试 View 和 手势
     func testView() {
         // 取第一个元素
         //        let btns = app.windows.buttons.firstMatch
@@ -360,10 +360,12 @@ class XQUITestDemoUITests: XCTestCase {
         
         let tables = app.tables.firstMatch
         
+        print("wxq: ", app.debugDescription)
+        
         // 删除cell
         tables.xq_swipeLeftDeleteCell(0, deleteButtonTitle: "删除")
         let _ = app.wait(for: .notRunning, timeout: 1)
-        
+
         tables.xq_swipeLeftDeleteCell(3, deleteButtonTitle: "删除")
         let _ = app.wait(for: .notRunning, timeout: 1)
         
@@ -372,8 +374,10 @@ class XQUITestDemoUITests: XCTestCase {
         let _ = app.wait(for: .notRunning, timeout: 1)
         
         // 滚动到某一行, 并点击
-        tables.xq_scrollToElement(element: tables.cells.element(boundBy: 45))
-        tables.cells.element(boundBy: 45).tap()
+        let cell = tables.cells.element(boundBy: 30)
+        if tables.xq_scrollToElement(element: cell) {
+            cell.tap()
+        }
         
         // 其他什么取cell里面的button都差不多
         // 就是根据下标取cell, 或者直接取出tableView里面所有的button这些
@@ -576,29 +580,29 @@ class XQUITestDemoUITests: XCTestCase {
     
     /// 打开其他app
     func testLaunchOtherApp() {
-        let sefariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
+        let safariApp = XCUIApplication.init(bundleIdentifier: "com.apple.mobilesafari")
         
-        print("wxq: ", sefariApp.state)
+        print("wxq: ", safariApp.state)
         
         // 判断这个 app 是否已经启动
         // 就是双按 Home 键，然后把 APP 划掉, 就属于不存在
-        if !sefariApp.exists {
-            sefariApp.launch()
+        if !safariApp.exists {
+            safariApp.launch()
             return
         }
         
-        switch sefariApp.state {
+        switch safariApp.state {
             
         case .runningBackgroundSuspended:
             // 就是比如你打开了 Safari，然后再打开 App Store
             // 然后你双按 Home 键, 这个时候, 就是 runningBackgroundSuspended 状态
             print("后台挂起")
-            sefariApp.activate()
+            safariApp.activate()
             break
             
         case .runningBackground:
             print("后台运行")
-            sefariApp.activate()
+            safariApp.activate()
             break
 
         case .runningForeground:
@@ -608,7 +612,7 @@ class XQUITestDemoUITests: XCTestCase {
         case .notRunning:
             // 这个还不清楚. 估计是开了很多应用, 然后内存不足, 停掉了APP
             print("没在运行")
-            sefariApp.activate()
+            safariApp.activate()
             break
             
             // 无法判断状态, 都重新运行
@@ -616,11 +620,11 @@ class XQUITestDemoUITests: XCTestCase {
             print("未知状态")
         default:
             // 启动App
-            sefariApp.launch()
+            safariApp.launch()
             break
         }
         
-        print("wxq: ", sefariApp.state)
+        print("wxq: ", safariApp.state)
         
         
         
@@ -675,22 +679,35 @@ extension XCUIElement {
     /// 这里可以再封装一下的，比如可以向上滚动, 可以无限循环上下滚动等等...
     /// - Parameter element: UI元素
     /// - Parameter isAutoStop: true 滚动到最后一个, 自动停下来
-    func xq_scrollToElement(element: XCUIElement, isAutoStop: Bool = true) {
+    ///
+    /// 返回 true 表示找到了传入的元素
+    ///
+    func xq_scrollToElement(element: XCUIElement, isAutoStop: Bool = true) -> Bool {
         // 一直滚动到某个元素出现为止
 //        while !element.xq_visible() {
+        
+        // 不是 tableView, 或者元素不存在
+        if self.elementType != .table || !element.exists {
+            return false
+        }
+        
         // 可被点击为止
         while !element.isHittable {
             
             // 滚动到最后就停下来
-            if isAutoStop && self.elementType == .table {
+            if isAutoStop {
                 let lastElement = self.cells.element(boundBy: self.cells.count - 1)
-                if lastElement.xq_visible() {
-                    break
+                if lastElement.isHittable {
+//                if lastElement.xq_visible() {
+                    // 滚动到最后了, 还是找不到
+                    return false
                 }
             }
             
             self.swipeUp()
         }
+        
+        return true
     }
     
     /// 是否已经显示在当前 app windows 界面中
